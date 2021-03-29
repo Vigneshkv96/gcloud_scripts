@@ -1,0 +1,36 @@
+############ Import section ######
+import pygsheets
+import pandas as pd
+import argparse
+##################################
+
+########### Variable Section #####
+gc = res = df = sh = shurl = wks = None
+##################################
+
+########## Arguments Section ####
+parser = argparse.ArgumentParser()
+parser.add_argument("-spreadsheet", "--spreadsheet", help = "Give the name for Google Spreadsheet you want")
+args = parser.parse_args()
+
+def spreadsheet():
+   #authorization
+   gc = pygsheets.authorize(service_file='/home/ubuntu/testing.json')
+   res = gc.sheet.create(args.spreadsheet)
+   # Create empty dataframe
+   df = pd.DataFrame()
+   # Create a column
+   df['name'] = ['John', 'Steve', 'Sarah']
+   sh = gc.open(args.spreadsheet)
+   #select the first sheet 
+   wks = sh[0]
+   #update the first sheet with df, starting at cell B2. 
+   wks.set_dataframe(df,(1,1))
+   return sh.url
+
+def main():
+    shurl = spreadsheet()
+    print(shurl)
+
+if __name__ == "__main__":
+        main()
